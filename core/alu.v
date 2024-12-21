@@ -6,7 +6,7 @@ module ALU (
     output wire [3:0]       flags
 );
 
-// Operation List needed by R Instruction
+// Operation List needed by Instruction
 localparam ADD  = 4'b0000;
 localparam SUB  = 4'b0001;
 localparam AND  = 4'b0010;
