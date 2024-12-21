@@ -4,7 +4,7 @@
 */
 
 module extend (
-    input   [2:0]   immSrc,
+    input   [1:0]   immSrc,
     input   [2:0]   LSCtrl,
     input   [31:0]  instr,
     input   [31:0]  dataMem,

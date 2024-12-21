@@ -45,11 +45,11 @@ assign carry_out    = a_sum_b[32];
 assign a_and_b      = srcA & srcB;
 assign a_or_b       = srcA | srcB;
 assign a_slt_b      = {30'b000000000000000000000000000000, (a_sum_b[31] ^ flag_V)};
-assign a_sll_b      = srcA << srcB;
+assign a_sll_b      = srcA << srcB[4:0];
 assign a_sltu_b     = {30'b000000000000000000000000000000, ((a_sum_b[31] == 1'b0) ? 1'b1 : 1'b0)} ;
 assign a_xor_b      = srcA ^ srcB;
-assign a_srl_b      = srcA >> srcB;
-assign a_sra_b      = srcA >>> srcB;
+assign a_srl_b      = srcA >> srcB[4:0];
+assign a_sra_b      = srcA >>> srcB[4:0];
 
 // Operation for assigning the flags
 assign flag_N       = ALUResult[31];
