@@ -1,15 +1,25 @@
 module control_unit(
     input   [6:0]           OPCode,
-    input   [3:0]           funct3,
+    input   [2:0]           funct3,
     input                   funct7,
-    input                   zero,
-    output reg              PCSource,
-    output reg              resultSource,
-    output reg              memWrite,
-    output reg  [3:0]       ALUControl,
-    output reg              ALUSource,
-    output reg  [1:0]       immSource,
-    output reg              regWrite
+    input                   negative_flag,
+    input                   zero_flag,
+    input                   carry_flag,
+    input                   overflow_flag,
+
+    output                  regWrite,
+    output      [2:0]       immSource,
+    output      [2:0]       loadCtrl,
+    output      [1:0]       storeCtrl,
+    output                  srcAIn,
+    output                  srcBIn,
+    output                  resultSource,
+    output                  memWrite,
+    output                  PCNextIn,
+    output                  srcPCTarget,
+    output                  branch,
+    output                  jump,
+    output      [3:0]       ALUControl
 );
 
 /* 
@@ -45,38 +55,38 @@ localparam ALU_SRA  = 4'b1001;
 reg branch;
 reg [1:0] ALUOp;
 
-always @(*) begin
-    if (OPCode == OPCode_R_TYPE) begin
-        branch          <= 1'b0;
-        PCSource        <= (zero & branch);
-        resultSource    <= 1'b0;
-        memWrite        <= 1'b0;
-        ALUOp           <= 2'b10;
-        ALUSource       <= 1'b0;
-        immSource       <= 2'b00;
-        regWrite        <= 1'b1;
-    end 
-    else if (OPCode === OPCode_I_LW) begin
-        branch          <= 1'b0;
-        PCSource        <= (zero & branch);
-        resultSource    <= 1'b0;
-        memWrite        <= 1'b0;
-        ALUOp           <= 2'b10;
-        ALUSource       <= 1'b0;
-        immSource       <= 2'b00;
-        regWrite        <= 1'b1;
-    end
-    else 
-    begin
-        branch          <= 1'b0;
-        PCSource        <= 1'b0;
-        resultSource    <= 1'b0;
-        memWrite        <= 1'b0;
-        ALUOp           <= 1'b0;
-        ALUSource       <= 1'b0;
-        immSource       <= 2'b00;
-        regWrite        <= 1'b0;
-    end
-end
+// always @(*) begin
+//     if (OPCode == OPCode_R_TYPE) begin
+//         branch          <= 1'b0;
+//         PCSource        <= (zero & branch);
+//         resultSource    <= 1'b0;
+//         memWrite        <= 1'b0;
+//         ALUOp           <= 2'b10;
+//         ALUSource       <= 1'b0;
+//         immSource       <= 2'b00;
+//         regWrite        <= 1'b1;
+//     end 
+//     else if (OPCode === OPCode_I_LW) begin
+//         branch          <= 1'b0;
+//         PCSource        <= (zero & branch);
+//         resultSource    <= 1'b0;
+//         memWrite        <= 1'b0;
+//         ALUOp           <= 2'b10;
+//         ALUSource       <= 1'b0;
+//         immSource       <= 2'b00;
+//         regWrite        <= 1'b1;
+//     end
+//     else 
+//     begin
+//         branch          <= 1'b0;
+//         PCSource        <= 1'b0;
+//         resultSource    <= 1'b0;
+//         memWrite        <= 1'b0;
+//         ALUOp           <= 1'b0;
+//         ALUSource       <= 1'b0;
+//         immSource       <= 2'b00;
+//         regWrite        <= 1'b0;
+//     end
+// end
 
 endmodule
