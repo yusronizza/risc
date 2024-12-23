@@ -7,8 +7,8 @@ module LoadExt(
 localparam LB       =   3'b000; 
 localparam LH       =   3'b001; 
 localparam LW       =   3'b010; 
-localparam LBU      =   3'b011; 
-localparam LHU      =   3'b100;
+localparam LBU      =   3'b100; 
+localparam LHU      =   3'b101;
 
 always @(loadCtrl or dataMem or dataExt) begin
     case (loadCtrl)
