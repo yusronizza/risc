@@ -37,22 +37,6 @@ localparam OPCode_B_BRANCH     = 7'b1100011; // 99
 localparam OPCode_I_JALR       = 7'b1100111; // 103 : CS
 localparam OPCode_J_JAL        = 7'b1101111; // 111
 
-/* 
- * ALU Control List
- * RISCV32I has 10 type of ALU Instruction
-*/
-localparam ALU_ADD  = 4'b0000;
-localparam ALU_SUB  = 4'b0001;
-localparam ALU_AND  = 4'b0010;
-localparam ALU_OR   = 4'b0011;
-localparam ALU_SLT  = 4'b0100;
-localparam ALU_SLL  = 4'b0101;
-localparam ALU_SLTU = 4'b0110;
-localparam ALU_XOR  = 4'b0111;
-localparam ALU_SRL  = 4'b1000;
-localparam ALU_SRA  = 4'b1001;
-
-
 /* Branch and Jump signal */ 
 wire branch = (OPCode == OPCode_B_BRANCH)   ? 1'b1 : 1'b0;
 wire jump   = (OPCode == OPCode_I_JALR)     ? 1'b1 : 

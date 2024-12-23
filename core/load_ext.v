@@ -12,12 +12,18 @@ localparam LHU      =   3'b101;
 
 always @(loadCtrl or dataMem or dataExt) begin
     case (loadCtrl)
-        LB  : dataExt <= {{24{dataMem[7]}}  , dataMem[7:0]};
-        LH  : dataExt <= {{16{dataMem[15]}} , dataMem[15:0]};
-        LW  : dataExt <= {dataMem[31:0]};
-        LBU : dataExt <= {{24{1'b0}}        , dataMem[7:0]};
-        LHU : dataExt <= {{16{1'b0}}        , dataMem[15:0]};
-        default: dataExt <= 32'h00000000;
+        LB  : 
+            dataExt <= {{24{dataMem[7]}}, dataMem[7:0]};
+        LH  : 
+            dataExt <= {{16{dataMem[15]}}, dataMem[15:0]};
+        LW  : 
+            dataExt <= {dataMem[31:0]};
+        LBU : 
+            dataExt <= {{24{1'b0}}, dataMem[7:0]};
+        LHU : 
+            dataExt <= {{16{1'b0}}, dataMem[15:0]};
+        default: 
+            dataExt <= 32'h00000000;
     endcase
 end
                         
