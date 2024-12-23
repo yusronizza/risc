@@ -2,7 +2,7 @@ module ALU (
     input wire  [31:0]      srcA,
     input wire  [31:0]      srcB,
     input wire  [3:0]       ALUControl,
-    output wire [31:0]      ALUResult,
+    output reg  [31:0]      ALUResult,
     output wire [3:0]       flags
 );
 
@@ -59,15 +59,22 @@ assign flag_V       = (~ALUControl[1]) & (srcA[31] ^ a_sum_b[31]) & (~(ALUContro
 
 // Concat the final flags and MUX for the final ALU result
 assign flags        = {flag_N, flag_Z, flag_C, flag_V};
-assign ALUResult    = (ALUControl == ADD)     ? a_sum_b[31:0] :
-                      (ALUControl == SUB)     ? a_sum_b[31:0] :
-                      (ALUControl == AND)     ? a_and_b       : 
-                      (ALUControl == OR)      ? a_or_b        : 
-                      (ALUControl == SLT)     ? a_slt_b       :
-                      (ALUControl == SLL)     ? a_sll_b       :  
-                      (ALUControl == SLTU)    ? a_sltu_b      : 
-                      (ALUControl == XOR)     ? a_xor_b       : 
-                      (ALUControl == SRL)     ? a_srl_b       : 
-                      (ALUControl == SRA)     ? a_sra_b       : 32'h00000000;
+
+/* MUX to select correct result */
+always @(srcA or srcB or ALUControl) begin
+    case (ALUControl)
+        ADD:  ALUResult <= a_sum_b[31:0];
+        SUB:  ALUResult <= a_sum_b[31:0];
+        AND:  ALUResult <= a_and_b;
+        OR:   ALUResult <= a_or_b;
+        SLT:  ALUResult <= a_slt_b;
+        SLL:  ALUResult <= a_sll_b;
+        SLTU: ALUResult <= a_sltu_b;
+        XOR:  ALUResult <= a_xor_b;
+        SRL:  ALUResult <= a_srl_b;
+        SRA:  ALUResult <= a_sra_b;
+        default: ALUResult <= 32'h00000000;
+    endcase
+end
 
 endmodule
