@@ -15,14 +15,14 @@ module mainDecoder(
     output                  srcAIn,
     output                  srcBIn,
     output                  resultSource,
-    output                  memWrite,
-    output                  PCNextIn,
+    output wire             memWrite,
+    output wire             PCNextIn,
     output                  srcPCTarget,
     output      [3:0]       ALUControl
 );
 
 /* 
- * Instruction Opcodes
+ * Instruction OPCodes
  * RISC-V has 6 type of Instruction : I, U, S, R, B, J
 */
 localparam OPCode_I_LW         = 7'b0000011; // 3
@@ -53,9 +53,9 @@ localparam ALU_SRA  = 4'b1001;
 
 /* Branch and Jump signal */ 
 
-wire branch = (OPCode == OPCode_B_BRANCH) ? 1'b1 : 1'b0;
-wire jump   = (OPCode == OPCode_I_JALR) ? 1'b1 : 
-              (OPCode == OPCode_J_JAL) ? 1'b1 : 1'b0;
+wire branch = (OPCode == OPCode_B_BRANCH)   ? 1'b1 : 1'b0;
+wire jump   = (OPCode == OPCode_I_JALR)     ? 1'b1 : 
+              (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
 
 /* Internal signal*/
 wire beq    = zero_flag & branch;
@@ -67,38 +67,29 @@ wire bgeu   = (carry_flag) & branch;
 wire jalr   = jump;
 wire jal    = jump;
 
-// always @(*) begin
-//     if (OPCode == OPCode_R_TYPE) begin
-//         branch          <= 1'b0;
-//         PCSource        <= (zero & branch);
-//         resultSource    <= 1'b0;
-//         memWrite        <= 1'b0;
-//         ALUOp           <= 2'b10;
-//         ALUSource       <= 1'b0;
-//         immSource       <= 2'b00;
-//         regWrite        <= 1'b1;
-//     end 
-//     else if (OPCode === OPCode_I_LW) begin
-//         branch          <= 1'b0;
-//         PCSource        <= (zero & branch);
-//         resultSource    <= 1'b0;
-//         memWrite        <= 1'b0;
-//         ALUOp           <= 2'b10;
-//         ALUSource       <= 1'b0;
-//         immSource       <= 2'b00;
-//         regWrite        <= 1'b1;
-//     end
-//     else 
-//     begin
-//         branch          <= 1'b0;
-//         PCSource        <= 1'b0;
-//         resultSource    <= 1'b0;
-//         memWrite        <= 1'b0;
-//         ALUOp           <= 1'b0;
-//         ALUSource       <= 1'b0;
-//         immSource       <= 2'b00;
-//         regWrite        <= 1'b0;
-//     end
-// end
+assign PCNextIn = beq | bne | blt | bge | bltu | bgeu | jalr | jal ;
 
+assign memWrite = (OPCode == OPCode_S_STORE) ? 1'b1 : 1'b0;
+
+assign PCNextIn = (OPCode == OPCode_B_BRANCH)       ? 1'b1 :
+                  (OPCode == OPCode_I_JALR)         ? 1'b1 :
+                  (OPCode == OPCode_J_JAL)          ? 1'b1 : 1'b0;
+
+assign srcPCTarget = (OPCode == OPCode_B_BRANCH)    ? 1'b1 : 
+                     (OPCode == OPCode_J_JAL)       ? 1'b1 : 1'b0;
+
+assign regWrite = (OPCode == OPCode_S_STORE)  ? 1'b0 :
+                  (OPCode == OPCode_B_BRANCH) ? 1'b0 : 1'b1;
+
+assign resultSource = (OPCode == OPCode_I_LW)   ? 2'b01 :
+                      (OPCode == OPCode_R_TYPE) ? 2'b00 :
+                      (OPCode == OPCode_I_IMM)  ? 2'b00 :
+                      (OPCode == OPCode_U_AUI)  ? 2'b10 :
+                      (OPCode == OPCode_J_JAL)  ? 2'b11 :
+                      (OPCode == OPCode_I_JALR) ? 2'b11 : 2'b00 ;
+
+assign srcAIn = (OPCode == OPCode_U_AUI) ? 1'b0 : 1'b1;
+
+assign srcBIn = (OPCode == OPCode_R_TYPE)   ? 1'b0 :
+                (OPCode == OPCode_B_BRANCH) ? 1'b0 : 1'b1;
 endmodule
