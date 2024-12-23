@@ -20,7 +20,7 @@ module mainDecoder(
     output wire             memWrite,
     output wire             PCNextIn,
     output wire             srcPCTarget,
-    output wire [2:0]       ALUOp
+    output wire [1:0]       ALUOp
 );
 
 /* 

@@ -1,5 +1,5 @@
 module ALUDecoder (
-    input       [2:0]   ALUOp,
+    input       [1:0]   ALUOp,
     input       [2:0]   funct3,
     input               funct75,
     input               OPCode5,
