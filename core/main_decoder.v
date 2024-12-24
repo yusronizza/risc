@@ -1,7 +1,6 @@
 module mainDecoder(
     input   [6:0]           OPCode,
     input   [2:0]           funct3,
-    input                   funct75,
     input   [3:0]           ALUFlags,
     output wire             regWrite,
     output wire [2:0]       immSource,
@@ -49,7 +48,7 @@ wire jump   = (OPCode == OPCode_I_JALR)     ? 1'b1 :
               (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
 reg [5:0] branch;
 
-always @(OPCode or funct3 or funct75 or negative_flag or zero_flag or carry_flag or overflow_flag) begin
+always @(OPCode or funct3 or negative_flag or zero_flag or carry_flag or overflow_flag) begin
     if (OPCode == OPCode_B_BRANCH) begin
         case (funct3)
             branchBEQ   : 
@@ -67,7 +66,6 @@ always @(OPCode or funct3 or funct75 or negative_flag or zero_flag or carry_flag
             default: 
                 branch <= 6'b000000;
         endcase
-
     end
     else begin
         branch <= 6'b000000;

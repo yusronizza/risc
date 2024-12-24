@@ -19,14 +19,6 @@ module controlUnit (
 wire [1:0] ALUOp;
 wire OPCode5 = OPCode[5];
 
-ALUDecoder ALUDecoder (
-    .ALUOp      (ALUOp),
-    .funct3     (funct3),
-    .funct75    (funct75),
-    .OPCode5    (OPCode5),
-    .ALUControl (ALUControl)
-);
-
 mainDecoder mainDecoder (
     .OPCode             (OPCode),
     .funct3             (funct3),
@@ -43,6 +35,14 @@ mainDecoder mainDecoder (
     .PCNextIn           (PCNextIn),
     .srcPCTarget        (srcPCTarget),
     .ALUOp              (ALUOp)
+);
+
+ALUDecoder ALUDecoder (
+    .ALUOp      (ALUOp),
+    .funct3     (funct3),
+    .funct75    (funct75),
+    .OPCode5    (OPCode5),
+    .ALUControl (ALUControl)
 );
 
 endmodule

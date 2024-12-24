@@ -21,7 +21,7 @@ localparam ALU_XOR  = 4'b0111; // 7
 localparam ALU_SRL  = 4'b1000; // 8
 localparam ALU_SRA  = 4'b1001; // 9
 
-wire op5funct75 = {OPCode5, funct75};
+wire [1:0] op5funct75 = {OPCode5, funct75};
 
 always @(ALUOp or funct3 or funct75 or OPCode5) begin
     case (ALUOp)
@@ -48,19 +48,20 @@ always @(ALUOp or funct3 or funct75 or OPCode5) begin
                     ALUControl <= ALU_SLTU;
                 3'b100: 
                     ALUControl <= ALU_XOR;
-                3'b101: begin
-                    case (op5funct75)
-                        2'b00: 
-                            ALUControl <= ALU_SRL; 
-                        2'b01: 
-                            ALUControl <= ALU_SRA;
-                        2'b10: 
-                            ALUControl <= ALU_SRL;
-                        2'b11: 
-                            ALUControl <= ALU_SRA;
-                        default: 
-                            ALUControl <= ALU_ADD;
-                    endcase
+                3'b101: 
+                begin
+                    if (op5funct75 == 2'b00) begin
+                        ALUControl <= ALU_SRL; 
+                    end
+                    else if (op5funct75 == 2'b01) begin 
+                        ALUControl <= ALU_SRA;
+                    end
+                    else if (op5funct75 == 2'b11) begin
+                        ALUControl <= ALU_SRA;
+                    end
+                    else begin
+                        ALUControl <= ALU_SRL;
+                    end
                 end
                 3'b110: 
                     ALUControl <= ALU_OR;
