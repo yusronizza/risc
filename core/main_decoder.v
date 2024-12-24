@@ -88,6 +88,14 @@ assign immSource = (OPCode == OPCode_I_LW)    ? 3'b000 :
                    (OPCode == OPCode_I_JALR)  ? 3'b011 :
                    (OPCode == OPCode_J_JAL)   ? 3'b011 : 3'b000;
 
+assign ALUOp     = (OPCode == OPCode_I_LW)    ? 2'b00 :
+                   (OPCode == OPCode_S_STORE) ? 2'b00 :
+                   (OPCode == OPCode_R_TYPE)  ? 2'b10 :
+                   (OPCode == OPCode_I_IMM)   ? 2'b10 :
+                   (OPCode == OPCode_U_AUI)   ? 2'b00 :
+                   (OPCode == OPCode_B_BRANCH)? 2'b01 :
+                   (OPCode == OPCode_I_JALR)  ? 2'b00 : 2'b00;
+
 always @(OPCode or funct3) begin
     if(OPCode == OPCode_I_LW) begin
         loadCtrl <= funct3;

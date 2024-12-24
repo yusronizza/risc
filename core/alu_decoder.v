@@ -10,16 +10,16 @@ module ALUDecoder (
  * ALU Control List
  * RISCV32I has 10 type of ALU Instruction
 */
-localparam ALU_ADD  = 4'b0000;
-localparam ALU_SUB  = 4'b0001;
-localparam ALU_AND  = 4'b0010;
-localparam ALU_OR   = 4'b0011;
-localparam ALU_SLT  = 4'b0100;
-localparam ALU_SLL  = 4'b0101;
-localparam ALU_SLTU = 4'b0110;
-localparam ALU_XOR  = 4'b0111;
-localparam ALU_SRL  = 4'b1000;
-localparam ALU_SRA  = 4'b1001;
+localparam ALU_ADD  = 4'b0000; // 0
+localparam ALU_SUB  = 4'b0001; // 1
+localparam ALU_AND  = 4'b0010; // 2
+localparam ALU_OR   = 4'b0011; // 3
+localparam ALU_SLT  = 4'b0100; // 4
+localparam ALU_SLL  = 4'b0101; // 5
+localparam ALU_SLTU = 4'b0110; // 6
+localparam ALU_XOR  = 4'b0111; // 7
+localparam ALU_SRL  = 4'b1000; // 8
+localparam ALU_SRA  = 4'b1001; // 9
 
 wire op5funct75 = {OPCode5, funct75};
 
