@@ -16,6 +16,8 @@ wire        PCNextIn;
 wire        srcPCTarget;
 wire [3:0]  ALUControl;
 
+/* Constant 4 For PC Counter Plus 4*/
+wire [31:0] constant4 = 32'b00000000_00000000_00000000_00000100;
 
 /*Operation signal*/
 wire [31:0] PCNext;
@@ -36,6 +38,24 @@ wire [31:0] PCTarget;
 wire [31:0] opPCTarget;
 wire [31:0] writeDataRegister;
 
+controlUnit controlUnit (
+    .OPCode        (instr[6:0]), 
+    .funct3        (instr[14:12]),
+    .funct75       (instr[30]),
+    .ALUFlags      (ALUFlags),
+    .regWrite      (regWrite),
+    .immSource     (immSource),
+    .loadCtrl      (loadCtrl),
+    .storeCtrl     (storeCtrl),
+    .srcAIn        (srcAIn),
+    .srcBIn        (srcBIn),
+    .resultSource  (resultSrc),
+    .memWrite      (memWrite),
+    .PCNextIn      (PCNextIn),
+    .srcPCTarget   (srcPCTarget),
+    .ALUControl    (ALUControl)
+);
+
 mux2x1 PCNextInMux (
     .sel (PCNextIn),
     .inA (PCPlus4),
@@ -55,6 +75,12 @@ instructionMemory instructionMemory (
     .readData    (instr)
 );
 
+adder PCPlus4Adder (
+    .inA (PC),
+    .inB (constant4),
+    .out (PCPlus4)
+);
+
 registerFile registerFile (
     .clk            (clk),
     .rst            (rst),
@@ -64,13 +90,78 @@ registerFile registerFile (
     .writeEnable    (regWrite),
     .writeData      (writeDataRegister),
     .readData1      (registerData1),
-    .readData2      (registerData2),
+    .readData2      (registerData2)
 );
 
 immExt immExt (
     .immSrc (immSrc),
     .instr  (instr),
     .immOut (immExtended)
+);
+
+mux2x1 srcAmux (
+    .sel (srcAIn),
+    .inA (PC),
+    .inB (registerData1),
+    .out (ALUDataA)
+);
+
+mux2x1 srcBmux (
+    .sel (srcBIn),
+    .inA (registerData2),
+    .inB (immExtended),
+    .out (ALUDataB)
+);
+
+mux2x1 srcPCmux (
+    .sel (srcPCTarget),
+    .inA (registerData1),
+    .inB (PC),
+    .out (opPCTarget)
+);
+
+storeExt storeAlign (
+    .storeCtrl  (StoreCtrl),
+    .dataMem    (registerData2),
+    .dataExt    (storeAlignOut)
+);
+
+ALU ALU (
+    .srcA       (ALUDataA),
+    .srcB       (ALUDataB),
+    .ALUControl (ALUControl),
+    .ALUResult  (ALUResult),
+    .flags      (ALUFlags)
+);
+
+adder PCTargetAdder (
+    .inA (opPCTarget),
+    .inB (immExtended),
+    .out (PCTarget)
+);
+
+dataMemory dataMemory (
+    .clk            (clk),
+    .rst            (rst),
+    .readAddress    (ALUResult),
+    .writeEnable    (memWrite),
+    .writeData      (storeAlignOut),
+    .readData       (readDataMemory)
+);
+
+loadExt loadExt (
+    .loadCtrl   (loadCtrl),
+    .dataMem    (readDataMemory),
+    .dataExt    (loadExtendOut)
+);
+
+mux4x1 resultSrcmux (
+    .sel (resultSrc),
+    .inA (ALUResult),
+    .inB (loadExtendOut),
+    .inC (immExtended),
+    .inD (PCPlus4),
+    .out (writeDataRegister)
 );
 
 endmodule

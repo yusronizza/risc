@@ -1,4 +1,4 @@
-module LoadExt(
+module loadExt(
     input       [2:0]   loadCtrl,
     input       [31:0]  dataMem,
     output  reg [31:0]  dataExt
