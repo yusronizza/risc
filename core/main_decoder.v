@@ -2,26 +2,25 @@ module mainDecoder(
     input   [6:0]           OPCode,
     input   [2:0]           funct3,
     input                   funct75,
-    
-    //Input from ALU flag
-    input                   negative_flag,
-    input                   zero_flag,
-    input                   carry_flag,
-    input                   overflow_flag,
-
-    // Output control
+    input   [3:0]           ALUFlags,
     output wire             regWrite,
     output wire [2:0]       immSource,
     output reg  [2:0]       loadCtrl,
     output reg  [1:0]       storeCtrl,
     output wire             srcAIn,
     output wire             srcBIn,
-    output wire             resultSource,
+    output wire [1:0]       resultSource,
     output wire             memWrite,
     output wire             PCNextIn,
     output wire             srcPCTarget,
     output wire [1:0]       ALUOp
 );
+
+// Assign each flag status individually
+wire negative_flag  = ALUFlags[3];
+wire zero_flag      = ALUFlags[2];
+wire carry_flag     = ALUFlags[1];
+wire overflow_flag  = ALUFlags[0];
 
 /* 
  * Instruction OPCodes
@@ -37,64 +36,99 @@ localparam OPCode_B_BRANCH     = 7'b1100011; // 99
 localparam OPCode_I_JALR       = 7'b1100111; // 103 : CS
 localparam OPCode_J_JAL        = 7'b1101111; // 111
 
+//Branch State
+localparam branchBEQ       = 3'b000;
+localparam branchBNE       = 3'b001;
+localparam branchBLT       = 3'b100;
+localparam branchBGE       = 3'b101;
+localparam branchBLTU      = 3'b110;
+localparam branchBGEU      = 3'b111;
+
 /* Branch and Jump signal */ 
-wire branch = (OPCode == OPCode_B_BRANCH)   ? 1'b1 : 1'b0;
 wire jump   = (OPCode == OPCode_I_JALR)     ? 1'b1 : 
               (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
+reg [5:0] branch;
 
-/* Internal signal*/
-wire beq    = zero_flag & branch;
-wire bne    = ((zero_flag == 1'b0) ? 1'b1 : 1'b0) & branch;
-wire blt    = (negative_flag ^ overflow_flag) & branch;
-wire bge    = (~(negative_flag ^ overflow_flag)) & branch;
-wire bltu   = (~carry_flag) & branch;
-wire bgeu   = (carry_flag) & branch;
+always @(OPCode or funct3 or funct75 or negative_flag or zero_flag or carry_flag or overflow_flag) begin
+    if (OPCode == OPCode_B_BRANCH) begin
+        case (funct3)
+            branchBEQ   : 
+                branch <= 6'b100000;
+            branchBNE   : 
+                branch <= 6'b010000;
+            branchBLT   : 
+                branch <= 6'b001000;
+            branchBGE   : 
+                branch <= 6'b000100;
+            branchBLTU  : 
+                branch <= 6'b000010;
+            branchBGEU  : 
+                branch <= 6'b000001;
+            default: 
+                branch <= 6'b000000;
+        endcase
+
+    end
+    else begin
+        branch <= 6'b000000;
+    end
+end
+
+/* Binary Comparison Logic*/
+wire beq    = zero_flag & branch[5];
+wire bne    = ((zero_flag == 1'b0) ? 1'b1 : 1'b0) & branch[4];
+wire blt    = (negative_flag ^ overflow_flag) & branch[3];
+wire bge    = (~(negative_flag ^ overflow_flag)) & branch[2];
+wire bltu   = (~carry_flag) & branch[1];
+wire bgeu   = (carry_flag) & branch[0];
+wire jumpDecision;
+// Jump Signal
 wire jalr   = jump;
 wire jal    = jump;
 
-assign PCNextIn = beq | bne | blt | bge | bltu | bgeu | jalr | jal ;
+assign jumpDecision = beq | bne | blt | bge | bltu | bgeu | jalr | jal ;
 
-assign memWrite = (OPCode == OPCode_S_STORE) ? 1'b1 : 1'b0;
+assign memWrite     = (OPCode == OPCode_S_STORE)    ? 1'b1 : 1'b0;
 
-assign PCNextIn = (OPCode == OPCode_B_BRANCH)       ? 1'b1 :
-                  (OPCode == OPCode_I_JALR)         ? 1'b1 :
-                  (OPCode == OPCode_J_JAL)          ? 1'b1 : 1'b0;
+assign PCNextIn     = (OPCode == OPCode_B_BRANCH)   ? (1'b1) & jumpDecision :
+                      (OPCode == OPCode_I_JALR)     ? 1'b1 :
+                      (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
 
-assign srcPCTarget = (OPCode == OPCode_B_BRANCH)    ? 1'b1 : 
-                     (OPCode == OPCode_J_JAL)       ? 1'b1 : 1'b0;
+assign srcPCTarget  = (OPCode == OPCode_B_BRANCH)   ? 1'b1 : 
+                      (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
 
-assign regWrite = (OPCode == OPCode_S_STORE)  ? 1'b0 :
-                  (OPCode == OPCode_B_BRANCH) ? 1'b0 : 1'b1;
+assign regWrite     = (OPCode == OPCode_S_STORE)    ? 1'b0 :
+                      (OPCode == OPCode_B_BRANCH)   ? 1'b0 : 1'b1;
 
-assign resultSource = (OPCode == OPCode_I_LW)   ? 2'b01 :
-                      (OPCode == OPCode_R_TYPE) ? 2'b00 :
-                      (OPCode == OPCode_I_IMM)  ? 2'b00 :
-                      (OPCode == OPCode_U_AUI)  ? 2'b00 :
-                      (OPCode == OPCode_U_LUI)  ? 2'b10 :
-                      (OPCode == OPCode_J_JAL)  ? 2'b11 :
-                      (OPCode == OPCode_I_JALR) ? 2'b11 : 2'b00 ;
+assign resultSource = (OPCode == OPCode_I_LW)       ? 2'b01 :
+                      (OPCode == OPCode_R_TYPE)     ? 2'b00 :
+                      (OPCode == OPCode_I_IMM)      ? 2'b00 :
+                      (OPCode == OPCode_U_AUI)      ? 2'b00 :
+                      (OPCode == OPCode_U_LUI)      ? 2'b10 :
+                      (OPCode == OPCode_J_JAL)      ? 2'b11 :
+                      (OPCode == OPCode_I_JALR)     ? 2'b11 : 2'b00 ;
 
-assign srcAIn = (OPCode == OPCode_U_AUI) ? 1'b0 : 1'b1;
+assign srcAIn       = (OPCode == OPCode_U_AUI)      ? 1'b0 : 1'b1;
 
-assign srcBIn = (OPCode == OPCode_R_TYPE)   ? 1'b0 :
-                (OPCode == OPCode_B_BRANCH) ? 1'b0 : 1'b1;
+assign srcBIn       = (OPCode == OPCode_R_TYPE)     ? 1'b0 :
+                      (OPCode == OPCode_B_BRANCH)   ? 1'b0 : 1'b1;
 
-assign immSource = (OPCode == OPCode_I_LW)    ? 3'b000 :
-                   (OPCode == OPCode_S_STORE) ? 3'b001 :
-                   (OPCode == OPCode_I_IMM)   ? 3'b000 :
-                   (OPCode == OPCode_U_AUI)   ? 3'b100 :
-                   (OPCode == OPCode_U_LUI)   ? 3'b100 :
-                   (OPCode == OPCode_B_BRANCH)? 3'b010 :
-                   (OPCode == OPCode_I_JALR)  ? 3'b011 :
-                   (OPCode == OPCode_J_JAL)   ? 3'b011 : 3'b000;
+assign immSource    = (OPCode == OPCode_I_LW)       ? 3'b000 :
+                      (OPCode == OPCode_S_STORE)    ? 3'b001 :
+                      (OPCode == OPCode_I_IMM)      ? 3'b000 :
+                      (OPCode == OPCode_U_AUI)      ? 3'b100 :
+                      (OPCode == OPCode_U_LUI)      ? 3'b100 :
+                      (OPCode == OPCode_B_BRANCH)   ? 3'b010 :
+                      (OPCode == OPCode_I_JALR)     ? 3'b011 :
+                      (OPCode == OPCode_J_JAL)      ? 3'b011 : 3'b000;
 
-assign ALUOp     = (OPCode == OPCode_I_LW)    ? 2'b00 :
-                   (OPCode == OPCode_S_STORE) ? 2'b00 :
-                   (OPCode == OPCode_R_TYPE)  ? 2'b10 :
-                   (OPCode == OPCode_I_IMM)   ? 2'b10 :
-                   (OPCode == OPCode_U_AUI)   ? 2'b00 :
-                   (OPCode == OPCode_B_BRANCH)? 2'b01 :
-                   (OPCode == OPCode_I_JALR)  ? 2'b00 : 2'b00;
+assign ALUOp        = (OPCode == OPCode_I_LW)       ? 2'b00 :
+                      (OPCode == OPCode_S_STORE)    ? 2'b00 :
+                      (OPCode == OPCode_R_TYPE)     ? 2'b10 :
+                      (OPCode == OPCode_I_IMM)      ? 2'b10 :
+                      (OPCode == OPCode_U_AUI)      ? 2'b00 :
+                      (OPCode == OPCode_B_BRANCH)   ? 2'b01 :
+                      (OPCode == OPCode_I_JALR)     ? 2'b00 : 2'b00;
 
 always @(OPCode or funct3) begin
     if(OPCode == OPCode_I_LW) begin

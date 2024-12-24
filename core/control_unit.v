@@ -1,18 +1,15 @@
 module controlUnit (
-    //Input from instruction
     input wire  [6:0]   OPCode,
     input wire  [2:0]   funct3,
     input wire          funct75,
     input wire  [3:0]   ALUFlags,
-
-    // Output control
     output wire         regWrite,
     output wire [2:0]   immSource,
     output wire [2:0]   loadCtrl,
     output wire [1:0]   storeCtrl,
     output wire         srcAIn,
     output wire         srcBIn,
-    output wire         resultSource,
+    output wire [1:0]   resultSource,
     output wire         memWrite,
     output wire         PCNextIn,
     output wire         srcPCTarget,
@@ -34,10 +31,7 @@ mainDecoder mainDecoder (
     .OPCode             (OPCode),
     .funct3             (funct3),
     .funct75            (funct75),
-    .negative_flag      (ALUFlags[0]),
-    .zero_flag          (ALUFlags[1]),
-    .carry_flag         (ALUFlags[2]),
-    .overflow_flag      (ALUFlags[3]),
+    .ALUFlags           (ALUFlags),
     .regWrite           (regWrite),
     .immSource          (immSource),
     .loadCtrl           (loadCtrl),

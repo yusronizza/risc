@@ -34,31 +34,16 @@ controlUnit DUT(
     .ALUControl     (ALUControl)
 );
 
+reg [33:0] test_vectors [0:36];  // 34-bit data, 37 rows
+integer i;
+
 initial begin
-    OPCode   = 7'b0110011;
-    funct3   = 3'b101;
-    funct75  = 1'b0;
-    ALUFlags = 4'b0000;
-    #1;
-    OPCode   = 7'b0110011;
-    funct3   = 3'b011;
-    funct75  = 1'b1;
-    ALUFlags = 4'b0000;
-    #1;
-    OPCode   = 7'b0000011;
-    funct3   = 3'b100;
-    funct75  = 1'b1;
-    ALUFlags = 4'b0000;
-    #1;
-    OPCode   = 7'b0100011;
-    funct3   = 3'b010;
-    funct75  = 1'b1;
-    ALUFlags = 4'b0000;
-    #1;
-    OPCode   = 7'b0100011;
-    funct3   = 3'b010;
-    funct75  = 1'b0;
-    ALUFlags = 4'b0000;
+    $readmemb("control_unit_tb.txt", test_vectors);
+    for (i = 0 ; i < 37 ; i = i + 1 ) begin
+        {OPCode, funct3, funct75, ALUFlags} = {test_vectors[i][33:23], 4'b0000};
+        #10;
+    end
+    
 end
 
 endmodule
