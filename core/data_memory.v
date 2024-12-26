@@ -7,6 +7,7 @@ module dataMemory #(
     input wire  [31:0]      readAddress,
     input wire              writeEnable,
     input wire  [31:0]      writeData,
+    input        [1:0]      DM,
     output wire [31:0]      readData
 );
 integer i;
@@ -23,7 +24,11 @@ always @(posedge clk or posedge rst) begin
     end
     else begin
         if (writeEnable == 1'b1) begin
-            registers[readAddress] <= writeData;
+            case (DM)
+                2'b00: registers[readAddress][7:0]  <= writeData[7:0];
+                2'b01: registers[readAddress][15:0] <= writeData[15:0];
+                2'b00: registers[readAddress]       <= writeData;
+            endcase
         end
         else begin
             registers[readAddress] <= registers[readAddress];

@@ -12,7 +12,8 @@ module mainDecoder(
     output wire             memWrite,
     output wire             PCNextIn,
     output wire             srcPCTarget,
-    output wire [1:0]       ALUOp
+    output wire [1:0]       ALUOp,
+    output wire [1:0]       DM
 );
 
 // Assign each flag status individually
@@ -127,6 +128,10 @@ assign ALUOp        = (OPCode == OPCode_I_LW)       ? 2'b00 :
                       (OPCode == OPCode_U_AUI)      ? 2'b00 :
                       (OPCode == OPCode_B_BRANCH)   ? 2'b01 :
                       (OPCode == OPCode_I_JALR)     ? 2'b00 : 2'b00;
+
+assign DM           = (funct3 == 3'b000)            ? 2'b00 :
+                      (funct3 == 3'b001)            ? 2'b01 :
+                      (funct3 == 3'b010)            ? 2'b10 : 2'b00;
 
 always @(OPCode or funct3) begin
     if(OPCode == OPCode_I_LW) begin

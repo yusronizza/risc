@@ -17,7 +17,8 @@ wire        srcPCTarget;
 wire [3:0]  ALUControl;
 
 /* Constant 4 For PC Counter Plus 4*/
-wire [31:0] constant4 = 32'b00000000_00000000_00000000_00000100;
+// wire [31:0] constant4 = 32'b00000000_00000000_00000000_00000100;
+wire [31:0] constant4 = 32'b00000000_00000000_00000000_00000001;
 
 /*Operation signal*/
 wire [31:0] PCNext;

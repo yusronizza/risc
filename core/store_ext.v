@@ -1,13 +1,15 @@
 module storeExt(
-    input   [1:0]   storeCtrl,
+    input   [2:0]   funt3,
     input   [31:0]  dataMem,
     output  [31:0]  dataExt
 );
 
-localparam SB   = 2'b00; 
-localparam SH   = 2'b01;
-localparam SW   = 2'b10;
+localparam SB   = 3'b000; 
+localparam SH   = 3'b001;
+localparam SW   = 3'b010;
 
-assign dataExt  = (storeCtrl == SW) ? dataMem[31:0] : 32'h00000000;
+assign dataExt  = (funt3 == SB) ? {{24{1'b0}}, dataMem[7:0]}    :
+                  (funt3 == SH) ? {{16{1'b0}}, dataMem[15:0]}   : 
+                  (funt3 == SW) ? dataMem[31:0]                 : 32'h00000000;
                         
 endmodule

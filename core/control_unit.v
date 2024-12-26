@@ -13,7 +13,8 @@ module controlUnit (
     output wire         memWrite,
     output wire         PCNextIn,
     output wire         srcPCTarget,
-    output wire [3:0]   ALUControl
+    output wire [3:0]   ALUControl,
+    output wire [1:0]   DM
 );
     
 wire [1:0] ALUOp;
@@ -22,7 +23,6 @@ wire OPCode5 = OPCode[5];
 mainDecoder mainDecoder (
     .OPCode             (OPCode),
     .funct3             (funct3),
-    .funct75            (funct75),
     .ALUFlags           (ALUFlags),
     .regWrite           (regWrite),
     .immSource          (immSource),
@@ -34,7 +34,8 @@ mainDecoder mainDecoder (
     .memWrite           (memWrite),
     .PCNextIn           (PCNextIn),
     .srcPCTarget        (srcPCTarget),
-    .ALUOp              (ALUOp)
+    .ALUOp              (ALUOp),
+    .DM                 (DM)
 );
 
 ALUDecoder ALUDecoder (

@@ -1,5 +1,5 @@
 module loadExt(
-    input       [2:0]   loadCtrl,
+    input       [2:0]   funct3,
     input       [31:0]  dataMem,
     output  reg [31:0]  dataExt
 );
@@ -10,8 +10,8 @@ localparam LW       =   3'b010;
 localparam LBU      =   3'b100; 
 localparam LHU      =   3'b101;
 
-always @(loadCtrl or dataMem or dataExt) begin
-    case (loadCtrl)
+always @(funct3 or dataMem or dataExt) begin
+    case (funct3)
         LB  : 
             dataExt <= {{24{dataMem[7]}}, dataMem[7:0]};
         LH  : 
