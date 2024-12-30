@@ -1,7 +1,29 @@
+`timescale 1ns / 1ps
+
 module core (
-    input wire clk,
-    input wire rst
+    // input wire clk,
+    // input wire rst
 );
+
+reg clk;
+reg rst;
+
+/* Set initial condition for program counter to 0*/
+initial begin
+    PC <= 32'h00000000;
+    #1;
+end
+
+initial begin
+    clk <= 1'b0;
+    rst <= 1'b0;
+    forever begin
+        #0.5;
+        clk <= ~clk;
+    end
+    #20;
+    $finish;
+end
 
 /*Control signal*/
 wire [2:0]  funct3;
@@ -132,7 +154,7 @@ mux2x1 PCTargetMux (
 );
 
 store store (
-    .funt3          (funct3),
+    .funct3         (funct3),
     .dataIn         (registerData2),
     .dataOut        (storeOut)
 );
@@ -167,7 +189,7 @@ dataMemory dataMemory (
     .readData       (memoryData)
 );
 
-mux4x1 resultSrcmux (
+mux4x1 resultSrcMux (
     .sel            (resultSrc),
     .inA            (ALUResult),
     .inB            (loadOut),

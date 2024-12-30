@@ -75,9 +75,9 @@ assign resultSrc    = (OPCode == OPCode_I_LW)       ? 2'b01 :
                       (OPCode == OPCode_J_JAL)      ? 2'b11 :
                       (OPCode == OPCode_I_JALR)     ? 2'b11 : 2'b00 ;
 
-assign srcAIn       = (OPCode == OPCode_U_AUI)      ? 1'b0 : 1'b1;
+assign ASrc         = (OPCode == OPCode_U_AUI)      ? 1'b0 : 1'b1;
 
-assign srcBIn       = (OPCode == OPCode_R_TYPE)     ? 1'b0 :
+assign BSrc         = (OPCode == OPCode_R_TYPE)     ? 1'b0 :
                       (OPCode == OPCode_B_BRANCH)   ? 1'b0 : 1'b1;
 
 assign immSrc       = (OPCode == OPCode_I_LW)       ? 3'b000 :

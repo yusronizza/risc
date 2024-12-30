@@ -1,7 +1,4 @@
-module dataMemory #(
-    parameter MEM_DEPTH = 1000
-)
-(
+module dataMemory (
     input wire              clk,
     input wire              rst,
     input wire  [31:0]      readAddress,
@@ -11,7 +8,7 @@ module dataMemory #(
     output wire [31:0]      readData
 );
 
-reg [31:0] registers [0:MEM_DEPTH];
+reg [31:0] registers [0:1000];
 assign readData = registers[readAddress];
 
 localparam BYTE = 2'b00;
@@ -20,9 +17,15 @@ localparam WORD = 2'b10;
 
 integer i;
 
+initial begin
+    for (i = 0; i < 1000; i = i + 1) begin
+        registers[i] <= 32'h00000000;
+    end
+end
+
 always @(posedge clk or posedge rst) begin
     if (rst == 1'b1) begin
-        for (i = 0; i < MEM_DEPTH; i = i + 1) begin
+        for (i = 0; i < 1000; i = i + 1) begin
             registers[i] <= 32'h00000000;
         end
     end
