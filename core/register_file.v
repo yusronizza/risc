@@ -1,13 +1,13 @@
 module registerFile (
-    input wire          clk,                // Clock signal
-    input wire          rst,                // Reset signal
-    input wire  [4:0]   readAddress1,       // A0
-    input wire  [4:0]   readAddress2,       // A1
-    input wire  [4:0]   writeAddress,       // A3
-    input               writeEnable,        // WE3
-    input wire  [31:0]  writeData,          // WD3
-    output wire [31:0]  readData1,          // RD1
-    output wire [31:0]  readData2           // RD2
+    input wire          clk,
+    input wire          rst,
+    input wire  [4:0]   readAddress1,
+    input wire  [4:0]   readAddress2,
+    input wire  [4:0]   writeAddress,
+    input               writeEnable,
+    input wire  [31:0]  writeData,
+    output wire [31:0]  readData1,
+    output wire [31:0]  readData2
 );
 
 /*  Create 32 address of register

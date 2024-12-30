@@ -1,26 +1,19 @@
 module mainDecoder(
     input   [6:0]           OPCode,
     input   [2:0]           funct3,
-    input   [3:0]           ALUFlags,
+    output reg [5:0]        branch,
+    output wire             jump,
     output wire             regWrite,
-    output wire [2:0]       immSource,
-    output reg  [2:0]       loadCtrl,
-    output reg  [1:0]       storeCtrl,
-    output wire             srcAIn,
-    output wire             srcBIn,
-    output wire [1:0]       resultSource,
+    output wire [2:0]       immSrc,
+    output wire             ASrc,
+    output wire             BSrc,
+    output wire [1:0]       resultSrc,
     output wire             memWrite,
-    output wire             PCNextIn,
-    output wire             srcPCTarget,
+    output wire             PCTargetSrc,
     output wire [1:0]       ALUOp,
-    output wire [1:0]       DM
+    output wire [1:0]       DQM
 );
 
-// Assign each flag status individually
-wire negative_flag  = ALUFlags[3];
-wire zero_flag      = ALUFlags[2];
-wire carry_flag     = ALUFlags[1];
-wire overflow_flag  = ALUFlags[0];
 
 /* 
  * Instruction OPCodes
@@ -36,6 +29,11 @@ localparam OPCode_B_BRANCH     = 7'b1100011; // 99
 localparam OPCode_I_JALR       = 7'b1100111; // 103 : CS
 localparam OPCode_J_JAL        = 7'b1101111; // 111
 
+
+/* Branch and Jump signal */ 
+assign jump   = (OPCode == OPCode_I_JALR)     ? 1'b1 : 
+                (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
+
 //Branch State
 localparam branchBEQ       = 3'b000;
 localparam branchBNE       = 3'b001;
@@ -44,28 +42,16 @@ localparam branchBGE       = 3'b101;
 localparam branchBLTU      = 3'b110;
 localparam branchBGEU      = 3'b111;
 
-/* Branch and Jump signal */ 
-wire jump   = (OPCode == OPCode_I_JALR)     ? 1'b1 : 
-              (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
-reg [5:0] branch;
-
-always @(OPCode or funct3 or negative_flag or zero_flag or carry_flag or overflow_flag) begin
+always @(OPCode or funct3) begin
     if (OPCode == OPCode_B_BRANCH) begin
         case (funct3)
-            branchBEQ   : 
-                branch <= 6'b100000;
-            branchBNE   : 
-                branch <= 6'b010000;
-            branchBLT   : 
-                branch <= 6'b001000;
-            branchBGE   : 
-                branch <= 6'b000100;
-            branchBLTU  : 
-                branch <= 6'b000010;
-            branchBGEU  : 
-                branch <= 6'b000001;
-            default: 
-                branch <= 6'b000000;
+            branchBEQ : branch <= 6'b100000;
+            branchBNE : branch <= 6'b010000;
+            branchBLT : branch <= 6'b001000;
+            branchBGE : branch <= 6'b000100;
+            branchBLTU: branch <= 6'b000010;
+            branchBGEU: branch <= 6'b000001;
+            default   : branch <= 6'b000000;
         endcase
     end
     else begin
@@ -73,33 +59,15 @@ always @(OPCode or funct3 or negative_flag or zero_flag or carry_flag or overflo
     end
 end
 
-/* Binary Comparison Logic*/
-wire beq    = zero_flag & branch[5];
-wire bne    = ((zero_flag == 1'b0) ? 1'b1 : 1'b0) & branch[4];
-wire blt    = (negative_flag ^ overflow_flag) & branch[3];
-wire bge    = (~(negative_flag ^ overflow_flag)) & branch[2];
-wire bltu   = (~carry_flag) & branch[1];
-wire bgeu   = (carry_flag) & branch[0];
-wire jumpDecision;
-// Jump Signal
-wire jalr   = jump;
-wire jal    = jump;
-
-assign jumpDecision = beq | bne | blt | bge | bltu | bgeu | jalr | jal ;
-
 assign memWrite     = (OPCode == OPCode_S_STORE)    ? 1'b1 : 1'b0;
 
-assign PCNextIn     = (OPCode == OPCode_B_BRANCH)   ? (1'b1) & jumpDecision :
-                      (OPCode == OPCode_I_JALR)     ? 1'b1 :
-                      (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
-
-assign srcPCTarget  = (OPCode == OPCode_B_BRANCH)   ? 1'b1 : 
+assign PCTargetSrc  = (OPCode == OPCode_B_BRANCH)   ? 1'b1 : 
                       (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
 
 assign regWrite     = (OPCode == OPCode_S_STORE)    ? 1'b0 :
                       (OPCode == OPCode_B_BRANCH)   ? 1'b0 : 1'b1;
 
-assign resultSource = (OPCode == OPCode_I_LW)       ? 2'b01 :
+assign resultSrc    = (OPCode == OPCode_I_LW)       ? 2'b01 :
                       (OPCode == OPCode_R_TYPE)     ? 2'b00 :
                       (OPCode == OPCode_I_IMM)      ? 2'b00 :
                       (OPCode == OPCode_U_AUI)      ? 2'b00 :
@@ -112,7 +80,7 @@ assign srcAIn       = (OPCode == OPCode_U_AUI)      ? 1'b0 : 1'b1;
 assign srcBIn       = (OPCode == OPCode_R_TYPE)     ? 1'b0 :
                       (OPCode == OPCode_B_BRANCH)   ? 1'b0 : 1'b1;
 
-assign immSource    = (OPCode == OPCode_I_LW)       ? 3'b000 :
+assign immSrc       = (OPCode == OPCode_I_LW)       ? 3'b000 :
                       (OPCode == OPCode_S_STORE)    ? 3'b001 :
                       (OPCode == OPCode_I_IMM)      ? 3'b000 :
                       (OPCode == OPCode_U_AUI)      ? 3'b100 :
@@ -129,20 +97,8 @@ assign ALUOp        = (OPCode == OPCode_I_LW)       ? 2'b00 :
                       (OPCode == OPCode_B_BRANCH)   ? 2'b01 :
                       (OPCode == OPCode_I_JALR)     ? 2'b00 : 2'b00;
 
-assign DM           = (funct3 == 3'b000)            ? 2'b00 :
+assign DQM          = (funct3 == 3'b000)            ? 2'b00 :
                       (funct3 == 3'b001)            ? 2'b01 :
                       (funct3 == 3'b010)            ? 2'b10 : 2'b00;
-
-always @(OPCode or funct3) begin
-    if(OPCode == OPCode_I_LW) begin
-        loadCtrl <= funct3;
-    end
-end
-
-always @(OPCode or funct3) begin
-    if(OPCode == OPCode_S_STORE) begin
-        storeCtrl <= funct3[1:0];
-    end
-end
 
 endmodule

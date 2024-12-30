@@ -1,0 +1,151 @@
+$date
+	Sun Dec 29 11:16:46 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module top_tb $end
+$var wire 1 ! PCNextSrc $end
+$var wire 32 " ALUResult [31:0] $end
+$var wire 4 # ALUFlags [3:0] $end
+$var parameter 4 $ ADD $end
+$var parameter 4 % AND $end
+$var parameter 4 & OR $end
+$var parameter 4 ' SLL $end
+$var parameter 4 ( SLT $end
+$var parameter 4 ) SLTU $end
+$var parameter 4 * SRA $end
+$var parameter 4 + SRL $end
+$var parameter 4 , SUB $end
+$var parameter 4 - XOR $end
+$var reg 4 . ALUControl [3:0] $end
+$var reg 6 / branch [5:0] $end
+$var reg 1 0 jump $end
+$var reg 32 1 srcA [31:0] $end
+$var reg 32 2 srcB [31:0] $end
+$scope module ALU $end
+$var wire 4 3 ALUControl [3:0] $end
+$var wire 32 4 a_and_b [31:0] $end
+$var wire 32 5 a_or_b [31:0] $end
+$var wire 32 6 a_xor_b [31:0] $end
+$var wire 32 7 carry_in [31:0] $end
+$var wire 1 8 flag_C $end
+$var wire 1 9 flag_V $end
+$var wire 32 : srcA [31:0] $end
+$var wire 32 ; srcB [31:0] $end
+$var wire 32 < mux_out [31:0] $end
+$var wire 4 = flags [3:0] $end
+$var wire 1 > flag_Z $end
+$var wire 1 ? flag_N $end
+$var wire 1 @ carry_out $end
+$var wire 33 A a_sum_b [32:0] $end
+$var wire 32 B a_srl_b [31:0] $end
+$var wire 32 C a_sra_b [31:0] $end
+$var wire 32 D a_sltu_b [31:0] $end
+$var wire 32 E a_slt_b [31:0] $end
+$var wire 32 F a_sll_b [31:0] $end
+$var parameter 4 G ADD $end
+$var parameter 4 H AND $end
+$var parameter 4 I OR $end
+$var parameter 4 J SLL $end
+$var parameter 4 K SLT $end
+$var parameter 4 L SLTU $end
+$var parameter 4 M SRA $end
+$var parameter 4 N SRL $end
+$var parameter 4 O SUB $end
+$var parameter 4 P XOR $end
+$var reg 32 Q ALUResult [31:0] $end
+$upscope $end
+$scope module branchJump $end
+$var wire 4 R ALUFlags [3:0] $end
+$var wire 1 ! PCNextSrc $end
+$var wire 1 S beq $end
+$var wire 1 T bge $end
+$var wire 1 U bgeu $end
+$var wire 1 V blt $end
+$var wire 1 W bltu $end
+$var wire 1 X bne $end
+$var wire 6 Y branch [5:0] $end
+$var wire 1 Z jal $end
+$var wire 1 [ jalr $end
+$var wire 1 0 jump $end
+$var wire 1 \ zero_flag $end
+$var wire 1 ] overflow_flag $end
+$var wire 1 ^ negative_flag $end
+$var wire 1 _ carry_flag $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b111 P
+b1 O
+b1000 N
+b1001 M
+b110 L
+b100 K
+b101 J
+b11 I
+b10 H
+b0 G
+b111 -
+b1 ,
+b1000 +
+b1001 *
+b110 )
+b100 (
+b101 '
+b11 &
+b10 %
+b0 $
+$end
+#0
+$dumpvars
+0_
+0^
+0]
+0\
+0[
+0Z
+b0 Y
+0X
+0W
+0V
+0U
+0T
+0S
+b0 R
+b1000110 Q
+b100011000 F
+b0 E
+b1 D
+b100 C
+b100 B
+b1000110 A
+0@
+0?
+0>
+b0 =
+b100011 <
+b100011 ;
+b100011 :
+09
+08
+b1 7
+b0 6
+b100011 5
+b100011 4
+b0 3
+b100011 2
+b100011 1
+00
+b0 /
+b0 .
+b0 #
+b1000110 "
+0!
+$end
+#1000
