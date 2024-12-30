@@ -42,16 +42,16 @@ localparam branchBGE       = 3'b101;
 localparam branchBLTU      = 3'b110;
 localparam branchBGEU      = 3'b111;
 
-always @(OPCode or funct3) begin
+always @* begin
     if (OPCode == OPCode_B_BRANCH) begin
         case (funct3)
-            branchBEQ : branch <= 6'b100000;
-            branchBNE : branch <= 6'b010000;
-            branchBLT : branch <= 6'b001000;
-            branchBGE : branch <= 6'b000100;
-            branchBLTU: branch <= 6'b000010;
-            branchBGEU: branch <= 6'b000001;
-            default   : branch <= 6'b000000;
+            branchBEQ : branch = 6'b100000;
+            branchBNE : branch = 6'b010000;
+            branchBLT : branch = 6'b001000;
+            branchBGE : branch = 6'b000100;
+            branchBLTU: branch = 6'b000010;
+            branchBGEU: branch = 6'b000001;
+            default   : branch = 6'b000000;
         endcase
     end
     else begin

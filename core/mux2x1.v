@@ -5,10 +5,10 @@ module mux2x1(
     output  reg [31:0]  out
 );
 
-always @(sel or inA or inB) begin
+always @* begin
     case (sel)
-        1'b0: out <= inA;
-        1'b1: out <= inB;
+        1'b0: out = inA;
+        1'b1: out = inB;
     endcase
 end
 

@@ -61,19 +61,19 @@ assign flag_V       = (~ALUControl[1]) & (srcA[31] ^ a_sum_b[31]) & (~(ALUContro
 assign flags        = {flag_N, flag_Z, flag_C, flag_V};
 
 /* MUX to select correct result */
-always @(srcA or srcB or ALUControl) begin
+always @* begin
     case (ALUControl)
-        ADD     : ALUResult <= a_sum_b[31:0];
-        SUB     : ALUResult <= a_sum_b[31:0];
-        AND     : ALUResult <= a_and_b;
-        OR      : ALUResult <= a_or_b;
-        SLT     : ALUResult <= a_slt_b;
-        SLL     : ALUResult <= a_sll_b;
-        SLTU    : ALUResult <= a_sltu_b;
-        XOR     : ALUResult <= a_xor_b;
-        SRL     : ALUResult <= a_srl_b;
-        SRA     : ALUResult <= a_sra_b;
-        default : ALUResult <= 32'h00000000;
+        ADD     : ALUResult = a_sum_b[31:0];
+        SUB     : ALUResult = a_sum_b[31:0];
+        AND     : ALUResult = a_and_b;
+        OR      : ALUResult = a_or_b;
+        SLT     : ALUResult = a_slt_b;
+        SLL     : ALUResult = a_sll_b;
+        SLTU    : ALUResult = a_sltu_b;
+        XOR     : ALUResult = a_xor_b;
+        SRL     : ALUResult = a_srl_b;
+        SRA     : ALUResult = a_sra_b;
+        default : ALUResult = 32'h00000000;
     endcase
 end
 

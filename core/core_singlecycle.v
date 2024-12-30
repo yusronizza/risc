@@ -8,25 +8,24 @@ module core (
 reg clk;
 reg rst;
 
-/* Set initial condition for program counter to 0*/
-initial begin
-    PC <= 32'h00000000;
-    #1;
-end
-
 initial begin
     clk <= 1'b0;
     rst <= 1'b0;
     forever begin
-        #0.5;
+        #1;
         clk <= ~clk;
     end
-    #20;
-    $finish;
 end
 
-/*Control signal*/
+
 wire [2:0]  funct3;
+wire [6:0]  OPCode;
+wire        funct75;
+wire [4:0]  readAddress1;
+wire [4:0]  readAddress2;
+wire [4:0]  writeAddress;
+
+/*Control signal*/
 wire [5:0]  branch;
 wire        jump;
 wire        regWrite;	
@@ -63,12 +62,18 @@ wire [31:0] PCTarget;
 wire [31:0] PCTargetOP;
 wire [31:0] writeDataRegister;
 
-assign funct3 = instr[14:12];
+/*Instruction Parser*/
+assign funct3       = instr[14:12];
+assign OPCode       = instr[6:0];
+assign funct75      = instr[30];
+assign readAddress1 = instr[19:15];
+assign readAddress2 = instr[24:20];
+assign writeAddress = instr[11:7];
 
 controlUnit controlUnit (
-    .OPCode         (instr[6:0]), 
+    .OPCode         (OPCode), 
     .funct3         (funct3),
-    .funct75        (instr[30]),
+    .funct75        (funct75),
     .branch         (branch),
     .jump           (jump),
     .regWrite       (regWrite),
@@ -117,9 +122,9 @@ adder PCPlus4Adder (
 registerFile registerFile (
     .clk            (clk),
     .rst            (rst),
-    .readAddress1   (instr[19:15]),
-    .readAddress2   (instr[24:20]),
-    .writeAddress   (instr[11:7]),
+    .readAddress1   (readAddress1),
+    .readAddress2   (readAddress2),
+    .writeAddress   (writeAddress),
     .writeEnable    (regWrite),
     .writeData      (writeDataRegister),
     .readData1      (registerData1),

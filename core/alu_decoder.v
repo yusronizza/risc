@@ -23,56 +23,56 @@ localparam ALU_SRA  = 4'b1001; // 9
 
 wire [1:0] op5funct75 = {OPCode5, funct75};
 
-always @(ALUOp or funct3 or funct75 or OPCode5) begin
+always @* begin
     case (ALUOp)
         2'b00: 
-            ALUControl <= ALU_ADD;
+            ALUControl = ALU_ADD;
         2'b01: 
-            ALUControl <= ALU_SUB;
+            ALUControl = ALU_SUB;
         2'b10: begin
             case (funct3)
                 3'b000: 
                 begin
                     if (op5funct75 == 2'b11) begin
-                        ALUControl <= ALU_SUB;
+                        ALUControl = ALU_SUB;
                     end
                     else begin
-                        ALUControl <= ALU_ADD;
+                        ALUControl = ALU_ADD;
                     end
                 end
                 3'b001: 
-                    ALUControl <= ALU_SLL;
+                    ALUControl = ALU_SLL;
                 3'b010: 
-                    ALUControl <= ALU_SLT;
+                    ALUControl = ALU_SLT;
                 3'b011: 
-                    ALUControl <= ALU_SLTU;
+                    ALUControl = ALU_SLTU;
                 3'b100: 
-                    ALUControl <= ALU_XOR;
+                    ALUControl = ALU_XOR;
                 3'b101: 
                 begin
                     if (op5funct75 == 2'b00) begin
-                        ALUControl <= ALU_SRL; 
+                        ALUControl = ALU_SRL; 
                     end
                     else if (op5funct75 == 2'b01) begin 
-                        ALUControl <= ALU_SRA;
+                        ALUControl = ALU_SRA;
                     end
                     else if (op5funct75 == 2'b11) begin
-                        ALUControl <= ALU_SRA;
+                        ALUControl = ALU_SRA;
                     end
                     else begin
-                        ALUControl <= ALU_SRL;
+                        ALUControl = ALU_SRL;
                     end
                 end
                 3'b110: 
-                    ALUControl <= ALU_OR;
+                    ALUControl = ALU_OR;
                 3'b111: 
-                    ALUControl <= ALU_AND;
+                    ALUControl = ALU_AND;
                 default: 
-                    ALUControl <= ALU_ADD;
+                    ALUControl = ALU_ADD;
             endcase
         end
         default: 
-            ALUControl <= ALU_ADD;
+            ALUControl = ALU_ADD;
     endcase
 end
 

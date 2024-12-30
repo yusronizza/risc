@@ -7,13 +7,12 @@ module mux4x1(
     output reg  [31:0]  out
 );
 
-
-always @(sel or inA or inB or inC or inD) begin
+always @* begin
     case (sel)
-        2'b00: out <= inA;
-        2'b01: out <= inB;
-        2'b10: out <= inC;
-        2'b11: out <= inD;
+        2'b00: out = inA;
+        2'b01: out = inB;
+        2'b10: out = inC;
+        2'b11: out = inD;
     endcase
 end
 

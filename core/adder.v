@@ -8,6 +8,6 @@ module adder (
 wire [32:0] result;
 assign result = inA + inB;
 // assign overflow = result[32];
-assign out      = result[31:0];
+assign out    = result[31:0];
 
 endmodule

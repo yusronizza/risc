@@ -3,7 +3,7 @@ module instructionMemory(
     output wire [31:0]  readData
 );
 
-reg [31:0] registers [0:(2**32)-1];
+reg [31:0] registers [0:100];
 
 initial begin
     $readmemh("instruction.mem", registers);
