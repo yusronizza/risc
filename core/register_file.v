@@ -26,9 +26,12 @@ module registerFile (
 */
 
 reg [31:0] registers [0:31];
-
+integer m;
 initial begin
     $readmemh("register.mem", registers);
+    for (m = 0; m < 32; m = m + 1) begin
+        $monitor ("Register %0h = 0x%0h time=%0t", m, registers[m], $time);
+    end
 end
 
 // /* Assign initial value just for simulation */

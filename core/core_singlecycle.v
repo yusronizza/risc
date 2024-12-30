@@ -11,6 +11,7 @@ reg rst;
 initial begin
     clk <= 1'b0;
     rst <= 1'b0;
+    #1;
     forever begin
         #1;
         clk <= ~clk;

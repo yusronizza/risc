@@ -35,12 +35,12 @@ assign jump   = (OPCode == OPCode_I_JALR)     ? 1'b1 :
                 (OPCode == OPCode_J_JAL)      ? 1'b1 : 1'b0;
 
 //Branch State
-localparam branchBEQ       = 3'b000;
-localparam branchBNE       = 3'b001;
-localparam branchBLT       = 3'b100;
-localparam branchBGE       = 3'b101;
-localparam branchBLTU      = 3'b110;
-localparam branchBGEU      = 3'b111;
+localparam branchBEQ    = 3'b000;
+localparam branchBNE    = 3'b001;
+localparam branchBLT    = 3'b100;
+localparam branchBGE    = 3'b101;
+localparam branchBLTU   = 3'b110;
+localparam branchBGEU   = 3'b111;
 
 always @* begin
     if (OPCode == OPCode_B_BRANCH) begin
