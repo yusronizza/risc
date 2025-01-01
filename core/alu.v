@@ -46,9 +46,9 @@ assign a_sub_b      = {1'b1, srcA} + {1'b0, ~srcB} + 32'h00000001;
 assign borrow_in    = a_sub_b[32];
 assign a_and_b      = srcA & srcB;
 assign a_or_b       = srcA | srcB;
-assign a_slt_b      = {30'b000000000000000000000000000000, (a_sum_b[31] ^ flag_V)};
+assign a_slt_b      = {{30{1'b0}}, (a_sub_b[31] ^ flag_V)};
 assign a_sll_b      = srcA << srcB[4:0];
-assign a_sltu_b     = {30'b000000000000000000000000000000, ((a_sum_b[31] == 1'b0) ? 1'b1 : 1'b0)} ;
+assign a_sltu_b     = {{30{1'b0}}, ((borrow_in == 1'b0) ? 1'b1 : 1'b0)} ;
 assign a_xor_b      = srcA ^ srcB;
 assign a_srl_b      = srcA >> srcB[4:0];
 assign a_sra_b      = srcA >>> srcB[4:0];
@@ -78,7 +78,7 @@ assign flag_N       = (ALUControl == ADD) ? ALUResult[31] :
 assign flag_Z       = &(~ALUResult);
 assign flag_C       = (ALUControl == ADD) ? carry_out :
                       (ALUControl == SUB) ? ~borrow_in : 1'b0;
-assign flag_V       = (~ALUControl[1]) & (srcA[31] ^ a_sum_b[31]) & (~(ALUControl[0] ^ srcA[31] ^ srcB[31]));
+assign flag_V       = (~ALUControl[1]) & (srcA[31] ^ ALUResult[31]) & (~(ALUControl[0] ^ srcA[31] ^ srcB[31]));
 
 // Concat the final flags and MUX for the final ALU result
 assign flags        = {flag_N, flag_Z, flag_C, flag_V};
