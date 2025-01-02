@@ -84,7 +84,7 @@ assign readData2 = registers[readAddress2];
 */
 integer i;
 
-always @(posedge clk or posedge rst) begin
+always @(negedge clk or posedge rst) begin
     if (rst == 1'b1) begin
         for (i = 0 ; i < 32 ; i = i + 1 ) begin
             registers[i] <= 32'h00000000;

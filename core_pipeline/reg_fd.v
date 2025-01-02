@@ -15,9 +15,23 @@ reg [31:0] PC;
 reg [31:0] PCPlus4;
 
 always @(posedge clk) begin
-    instr   <= instr_IF;
-    PC      <= PC_IF;
-    PCPlus4 <= PCPlus4_IF;
+    if (clr == 1'b1) begin
+        instr   <= 32'h00000000;
+        PC      <= 32'h00000000;
+        PCPlus4 <= 32'h00000000;
+    end
+    else begin
+        if (en == 1'b1) begin
+            instr   <= instr;
+            PC      <= PC;
+            PCPlus4 <= PCPlus4;
+        end
+        else begin
+            instr   <= instr_IF;
+            PC      <= PC_IF;
+            PCPlus4 <= PCPlus4_IF;
+        end
+    end
 end
 
 assign instr_ID     = instr;
