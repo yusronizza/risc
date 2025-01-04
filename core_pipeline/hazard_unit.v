@@ -29,10 +29,10 @@ module hazardUnit (
 
 always @* begin
     if (((readAddress1_EX == writeAddress_MEM) & regWrite_MEM) & (readAddress1_EX != 0)) begin
-        AFwdSrc_EX = 2'b10;
+        AFwdSrc_EX = 2'b01;
     end
     else if (((readAddress1_EX == writeAddress_WB) & regWrite_WB) & (readAddress1_EX != 0)) begin
-        AFwdSrc_EX = 2'b01;
+        AFwdSrc_EX = 2'b10;
     end
     else begin 
         AFwdSrc_EX = 2'b00;
