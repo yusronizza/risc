@@ -30,6 +30,18 @@ reg [31:0]  immOut;
 reg  [4:0]  writeAddress;
 reg [31:0]  PCPlus4;
 
+initial begin
+    regWrite        <= 1'b0;
+    memWrite        <= 1'b0;
+    resultSrc       <= 2'b00;
+    funct3          <= 3'b000;
+    ALUResult       <= 32'h00000000;
+    storeOut        <= 32'h00000000;
+    immOut          <= 32'h00000000;
+    writeAddress    <= 5'b00000;
+    PCPlus4         <= 32'h00000000;
+end
+
 always @(posedge clk) begin
     regWrite        <= regWrite_EX;
     memWrite        <= memWrite_EX;

@@ -15,6 +15,12 @@ reg [31:0] instr;
 reg [31:0] PC;
 reg [31:0] PCPlus4;
 
+initial begin
+    instr       <= 32'h00000000;
+    PC          <= 32'h00000000;
+    PCPlus4     <= 32'h00000000;
+end
+
 always @(posedge clk or posedge rst) begin
     if ((clr == 1'b1) | (rst == 1'b1)) begin
         instr   <= 32'h00000000;

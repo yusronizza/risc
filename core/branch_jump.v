@@ -2,7 +2,7 @@ module branchJump (
     input [5:0] branch,
     input       jump,
     input [3:0] ALUFlags,
-    output      PCNextSrc
+    output wire PCNextSrc
 );
 
 // Assign each flag status individually
