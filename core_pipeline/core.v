@@ -126,8 +126,8 @@ wire stall_IF;
 wire stall_ID;
 wire flush_ID;
 wire flush_EX;
-wire [1:0] AFwdSrc;
-wire [1:0] BFwdSrc;
+wire [1:0] AFwdSrc_EX;
+wire [1:0] BFwdSrc_EX;
 
 /**********************/
 /*MODULE INSTANTIATION*/
@@ -266,7 +266,7 @@ branchJump branchJump (
 
 wire [31:0] AFwdOut_EX;
 mux3x1 AFwdMux (
-    .sel            (AFwdSrc),
+    .sel            (AFwdSrc_EX),
     .inA            (readData1_EX),
     .inB            (ALUResult_MEM),
     .inC            (writeDataRegister_WB),
@@ -275,7 +275,7 @@ mux3x1 AFwdMux (
 
 wire [31:0] BFwdOut_EX;
 mux3x1 BFwdMux (
-    .sel            (BFwdSrc),
+    .sel            (BFwdSrc_EX),
     .inA            (readData2_EX),
     .inB            (ALUResult_MEM),
     .inC            (writeDataRegister_WB),
@@ -330,6 +330,7 @@ regExecuteMemory regExecuteMemory (
     .regWrite_EX        (regWrite_EX),
     .memWrite_EX        (memWrite_EX),
     .resultSrc_EX       (resultSrc_EX),
+    .DQM_EX             (DQM_EX),
     .funct3_EX          (funct3_EX),
     .ALUResult_EX       (ALUResult_EX),
     .storeOut_EX        (storeOut_EX),
@@ -339,6 +340,7 @@ regExecuteMemory regExecuteMemory (
     .regWrite_MEM       (regWrite_MEM),
     .memWrite_MEM       (memWrite_MEM),
     .resultSrc_MEM      (resultSrc_MEM),
+    .DQM_MEM            (DQM_MEM),
     .funct3_MEM         (funct3_MEM),
     .ALUResult_MEM      (ALUResult_MEM),
     .storeOut_MEM       (storeOut_MEM),
