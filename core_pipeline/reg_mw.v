@@ -1,4 +1,4 @@
-module regMemory (
+module regMemoryWriteback (
     input                clk,
     input                regWrite_MEM,
     input        [1:0]   resultSrc_MEM,

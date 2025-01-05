@@ -1,5 +1,6 @@
-module regDecode (
+module regDecodeExecute (
     input              clk,
+    input              clr,
     input        [5:0] branch_ID,
     input              jump_ID,
     input              regWrite_ID,
@@ -61,25 +62,47 @@ reg [31:0] PC;
 reg [31:0] PCPlus4;
 
 always @(posedge clk) begin
-    branch          <= branch_ID;
-    jump            <= jump_ID;
-    regWrite        <= regWrite_ID;
-    ASrc            <= ASrc_ID;
-    BSrc            <= BSrc_ID;
-    PCTargetSrc     <= PCTargetSrc_ID;
-    ALUControl      <= ALUControl_ID;
-    memWrite        <= memWrite_ID;
-    resultSrc       <= resultSrc_ID;
-    DQM             <= DQM_ID;
-    funct3          <= funct3_ID;
-    readData1       <= readData1_ID;
-    readData2       <= readData2_ID;
-    immOut          <= immOut_ID;
-    readAddress1    <= readAddress1_ID;
-    readAddress2    <= readAddress2_ID;
-    writeAddress    <= writeAddress_ID;
-    PC              <= PC_ID;
-    PCPlus4         <= PCPlus4_ID;
+    if (clr == 1'b1) begin
+        branch          <= 6'b00000;
+        jump            <= 1'b0;
+        regWrite        <= 1'b0;
+        ASrc            <= 1'b0;
+        BSrc            <= 1'b0;
+        PCTargetSrc     <= 1'b0;
+        ALUControl      <= 4'b0000;
+        memWrite        <= 1'b0;
+        resultSrc       <= 2'b00;
+        DQM             <= 2'b00;
+        funct3          <= 3'b000;
+        readData1       <= 32'h00000000;
+        readData2       <= 32'h00000000;
+        immOut          <= 32'h00000000;
+        readAddress1    <= 5'b00000;
+        readAddress2    <= 5'b00000;
+        writeAddress    <= 5'b00000;
+        PC              <= 32'h00000000;
+        PCPlus4         <= 32'h00000000;
+    end else begin
+        branch          <= branch_ID;
+        jump            <= jump_ID;
+        regWrite        <= regWrite_ID;
+        ASrc            <= ASrc_ID;
+        BSrc            <= BSrc_ID;
+        PCTargetSrc     <= PCTargetSrc_ID;
+        ALUControl      <= ALUControl_ID;
+        memWrite        <= memWrite_ID;
+        resultSrc       <= resultSrc_ID;
+        DQM             <= DQM_ID;
+        funct3          <= funct3_ID;
+        readData1       <= readData1_ID;
+        readData2       <= readData2_ID;
+        immOut          <= immOut_ID;
+        readAddress1    <= readAddress1_ID;
+        readAddress2    <= readAddress2_ID;
+        writeAddress    <= writeAddress_ID;
+        PC              <= PC_ID;
+        PCPlus4         <= PCPlus4_ID;
+    end
 end
 
 assign branch_EX        = branch;

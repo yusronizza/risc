@@ -1,5 +1,6 @@
-module regFetch (
+module regFetchDecode (
     input              clk,
+    input              rst,
     input              en,
     input              clr,
     input       [31:0] instr_IF,
@@ -14,8 +15,8 @@ reg [31:0] instr;
 reg [31:0] PC;
 reg [31:0] PCPlus4;
 
-always @(posedge clk) begin
-    if (clr == 1'b1) begin
+always @(posedge clk or posedge rst) begin
+    if ((clr == 1'b1) | (rst == 1'b1)) begin
         instr   <= 32'h00000000;
         PC      <= 32'h00000000;
         PCPlus4 <= 32'h00000000;

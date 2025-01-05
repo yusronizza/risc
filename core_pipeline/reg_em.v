@@ -1,4 +1,4 @@
-module regExecute (
+module regExecuteMemory (
     input                clk,
     input                regWrite_EX,
     input                memWrite_EX,

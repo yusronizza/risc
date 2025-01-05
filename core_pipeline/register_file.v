@@ -1,10 +1,10 @@
 module registerFile (
-    input wire          clk,
-    input wire          rst,
+    input               clk,
+    input               rst,
+    input               writeEnable,
     input wire  [4:0]   readAddress1,
     input wire  [4:0]   readAddress2,
     input wire  [4:0]   writeAddress,
-    input               writeEnable,
     input wire  [31:0]  writeData,
     output wire [31:0]  readData1,
     output wire [31:0]  readData2
