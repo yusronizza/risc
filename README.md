@@ -1,3 +1,5 @@
 ## RISC-V 32I Base Integer Instruction Set Implementation 
-### 1. Single Cycle Architecture
-### 2. Pipeline Architecture
+#### Single Cycle Architecture and Pipeline Architecture
+
+Multiplier 32 bit (ongoing)
+Divider 32 bit (ongoing)
