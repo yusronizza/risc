@@ -32,4 +32,71 @@ A **custom-designed RISC-V 32-bit processor**, developed from scratch using Veri
 │   ├── compile.tcl       # Compilation Script  
 │   ├── simulate.tcl      # Simulation Script  
 ├── LICENSE               # License File  
-└── README.md             # Project Documentation  
+└── README.md             # Project Documentation
+```
+## 🖼️ Architecture Overview
+
+This processor follows the RV32I architecture with a 5-stage pipeline:
+1. Instruction Fetch (IF): Fetches instructions from memory.
+2. Instruction Decode (ID): Decodes the instruction and reads operands.
+3. Execute (EX): Performs ALU operations or calculates branch targets.
+4. Memory Access (MEM): Accesses data memory if needed.
+5. Write Back (WB): Writes the result back to the register file.
+
+---
+
+## ⚙️ Simulation and Testing
+Prerequisites
+Verilog simulator (e.g., ModelSim, VCS, Icarus Verilog)
+GTKWave (optional for waveform viewing)
+
+---
+
+## 🚧 Roadmap
+
+- [x] RV32I Base Implementation
+- [x] Basic Hazard Detection & Forwarding
+- [ ] Branch Prediction (2-bit)
+- [ ] RV32M (Multiplication & Division)
+- [ ] Cache Integration
+- [ ] Formal Verification
+- [ ] Documentation
+  - [x] Write detailed `README.md`
+  - [ ] Add inline comments to code
+  - [ ] Publish GitHub Pages for project documentation
+
+---
+
+## 📖 References
+RISC-V Specification
+Computer Organization and Design: RISC-V Edition
+
+---
+
+## 📝 License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+---
+
+## ⭐ Support
+If you find this project helpful, give it a ⭐! Feel free to reach out for collaboration or suggestions.
+
+---
+
+## 📫 Contact
+
+Have questions, feedback, or want to collaborate? Feel free to reach out!
+
+- 🌐 **Website:** [yusronizza.github.io](https://yusronizza.github.io)
+- 📧 **Email:** [yusronizzafaradisa@gmail.com](mailto:yusronizzafaradisa@gmail.com)
+- 🐦 **Twitter:** [@yusronizza_](https://twitter.com/yourusername)
+- 💼 **LinkedIn:** [Yusron Izza Faradisa](https://linkedin.com/in/yusronizza)
+- 🛠️ **GitHub:** [@yusronizza](https://github.com/yusronizza)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit pull requests or open issues for discussion.
+
+**Contributions, issues, and feature requests are welcome!** Feel free to check out the [issues page](https://github.com/yusronizza/riscv/issues) to get started. 
