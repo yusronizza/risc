@@ -74,7 +74,7 @@ Computer Organization and Design: RISC-V Edition
 ---
 
 ## 📝 License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the GNU GENERAL PUBLIC LICENSE 3.0. See the LICENSE file for details.
 
 ---
 
